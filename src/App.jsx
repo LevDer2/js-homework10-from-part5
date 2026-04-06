@@ -1,6 +1,9 @@
 import { nanoid } from "nanoid";
 import React, { Component } from "react";
 import "./App.css";
+import ContactForm from "./components/ContactForm/ContactForm";
+import Filter from "./components/Filter/Filter";
+import ContactList from "./components/ContactList/ContactList";
 
 export default class App extends Component {
   state = {
@@ -54,7 +57,6 @@ export default class App extends Component {
   render() {
     const { name, number, filter } = this.state;
     const normalizedFilter = filter.toLowerCase();
-
     const filteredContacts = this.state.contacts.filter((contact) =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
@@ -64,66 +66,10 @@ export default class App extends Component {
         <div className="phonebook__card">
           <h1 className="phonebook__title">Phone Book</h1>
           <p className="phonebook__subtitle">The best book ever!</p>
-
-          <form className="phonebook__form" onSubmit={this.handleSubmit}>
-            <label className="phonebook__field">
-              <span>Name</span>
-              <input
-                className="phonebook__input"
-                onChange={this.handleChange}
-                type="text"
-                name="name"
-                value={name}
-                required
-              />
-            </label>
-
-            <label className="phonebook__field">
-              <span>Number</span>
-              <input
-                className="phonebook__input"
-                type="tel"
-                name="number"
-                onChange={this.handleChange}
-                value={number}
-                required
-              />
-            </label>
-
-            <button className="phonebook__addBtn" type="submit">
-              Add Contact
-            </button>
-          </form>
-
+          <ContactForm onSubmit={this.handleSubmit} onChange={this.handleChange} name={this.state.name} number={this.state.number}/>
           <h2 className="phonebook__contactsTitle">Contacts</h2>
-
-          <input
-            className="phonebook__filter"
-            type="text"
-            name="filter"
-            value={filter}
-            placeholder="Find contacts by name"
-            onChange={this.handleChange}
-          />
-
-          <ul className="phonebook__list">
-            {filteredContacts.map((contact) => (
-              <li className="phonebook__item" key={contact.id}>
-                <div className="phonebook__info">
-                  <span className="phonebook__name">{contact.name}</span>
-                  <span className="phonebook__number">{contact.number}</span>
-                </div>
-
-                <button
-                  className="phonebook__deleteBtn"
-                  type="button"
-                  onClick={() => this.handleDelete(contact.id)}
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+          <Filter filter={this.state.filter} onChange={this.handleChange}/>
+          <ContactList filteredContacts={filteredContacts} handleDelete={this.handleDelete} />
         </div>
       </div>
     );
