@@ -18,6 +18,21 @@ export default class App extends Component {
     number: "",
   };
 
+  componentDidMount() {
+    const data = localStorage.getItem("contacts");
+    if (data) {
+      this.setState({
+        contacts: JSON.parse(data),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    }
+  }
+
   handleChange = (evt) => {
     const { name, value } = evt.target;
     this.setState({ [name]: value });
@@ -34,7 +49,7 @@ export default class App extends Component {
 
     const normalizedName = this.state.name.toLowerCase().trim();
     const isDuplicate = this.state.contacts.some(
-      (contact) => contact.name.toLowerCase().trim() === normalizedName
+      (contact) => contact.name.toLowerCase().trim() === normalizedName,
     );
 
     if (isDuplicate) {
@@ -58,7 +73,7 @@ export default class App extends Component {
     const { name, number, filter } = this.state;
     const normalizedFilter = filter.toLowerCase();
     const filteredContacts = this.state.contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizedFilter)
+      contact.name.toLowerCase().includes(normalizedFilter),
     );
 
     return (
@@ -66,14 +81,20 @@ export default class App extends Component {
         <div className="phonebook__card">
           <h1 className="phonebook__title">Phone Book</h1>
           <p className="phonebook__subtitle">The best book ever!</p>
-          <ContactForm onSubmit={this.handleSubmit} onChange={this.handleChange} name={this.state.name} number={this.state.number}/>
+          <ContactForm
+            onSubmit={this.handleSubmit}
+            onChange={this.handleChange}
+            name={this.state.name}
+            number={this.state.number}
+          />
           <h2 className="phonebook__contactsTitle">Contacts</h2>
-          <Filter filter={this.state.filter} onChange={this.handleChange}/>
-          <ContactList filteredContacts={filteredContacts} handleDelete={this.handleDelete} />
+          <Filter filter={this.state.filter} onChange={this.handleChange} />
+          <ContactList
+            filteredContacts={filteredContacts}
+            handleDelete={this.handleDelete}
+          />
         </div>
       </div>
     );
   }
 }
-
-// AAAAAAAAA
